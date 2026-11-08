@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramo de violetas</title>
+<style>
+:root{--bg1:#fbf6ff;--bg2:#e6d8f7;--tx:#4b2a85}
+@media (prefers-color-scheme:dark){:root{--bg1:#2c2144;--bg2:#120c20;--tx:#d9c6fa}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:grid;place-items:center;text-align:center;color:var(--tx);
+  background:radial-gradient(ellipse at 50% 35%,var(--bg1),var(--bg2));
+  font-family:Georgia,"Times New Roman",serif;overflow:hidden}
+h1{font-weight:400;font-style:italic;letter-spacing:.04em;margin:.2rem 0 0;font-size:clamp(1.3rem,4vw,2rem)}
+small{opacity:.65}
+svg{width:min(92vw,470px);height:auto;max-height:80vh;overflow:visible;display:block;margin:auto}
+#planta{transform-origin:250px 470px;animation:brisa 6s ease-in-out infinite alternate}
+.flor{cursor:pointer}
+.flor>g{transform-box:fill-box;transform-origin:50% 50%;animation:vibra 3.5s ease-in-out infinite alternate}
+.flor:hover>g{transform:scale(1.12);animation-play-state:paused;transition:transform .25s}
+.flor.pop>g{animation:pop .6s ease}
+.cae{animation:cae linear infinite;opacity:0}
+@keyframes brisa{from{transform:rotate(-.9deg)}to{transform:rotate(.9deg)}}
+@keyframes vibra{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+@keyframes pop{40%{transform:scale(1.25) rotate(10deg)}}
+@keyframes cae{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.9}
+ 100%{opacity:0;transform:translate(var(--dx),330px) rotate(300deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<svg id="s" viewBox="0 0 500 640" role="img" aria-label="Ramo de violetas">
+ <defs>
+  <linearGradient id="hoja" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2f6b34"/><stop offset="1" stop-color="#6fb15f"/></linearGradient>
+  <linearGradient id="hoja2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#235a2d"/><stop offset="1" stop-color="#4f9448"/></linearGradient>
+  <linearGradient id="papel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e9d3b0"/><stop offset=".5" stop-color="#fdf6e8"/><stop offset="1" stop-color="#e2c8a0"/></linearGradient>
+  <linearGradient id="papelB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b98f63"/><stop offset="1" stop-color="#d9b88c"/></linearGradient>
+  <linearGradient id="cinta" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b48af0"/><stop offset="1" stop-color="#6a3bb8"/></linearGradient>
+  <filter id="sombra" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1b0838" flood-opacity=".35"/></filter>
+  <filter id="blur"><feGaussianBlur stdDeviation="6"/></filter>
+ </defs>
+ <ellipse cx="250" cy="610" rx="95" ry="11" fill="#000" opacity=".22" filter="url(#blur)"/>
+ <g id="atras"></g>
+ <g id="planta"><g id="hojas"></g><g id="tallos"></g><g id="flores"></g></g>
+ <g id="frente"></g>
+ <g id="petalos"></g>
+</svg>
+<h1>obviamente tampoco te ibas a quedar sin estas</h1>
+<small>aunque ojala podertelas dar de verdad D:</small>
+</main>
+<script>
+const NS="http://www.w3.org/2000/svg", $=id=>document.getElementById(id);
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||$("s")).appendChild(e);return e}
+let seed=7;const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);
+ t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const B={x:250,y:470};
+
+/* degradados de pétalo (3 tonos de violeta) */
+const tonos=[["#f6edff","#9a68e0","#4d2199"],["#f1e6ff","#7f4fc9","#3c1782"],["#f9f0ff","#b184ee","#5f31ae"],["#efe2ff","#6d3fb8","#32106f"]];
+tonos.forEach((c,i)=>{const g=el("radialGradient",{id:"p"+i,cx:"50%",cy:"100%",r:"105%"},document.querySelector("defs"));
+ [[0,c[0]],[.35,c[1]],[1,c[2]]].forEach(([o,s])=>el("stop",{offset:o,"stop-color":s},g))});
+
+/* papel trasero */
+el("path",{d:"M105 355 Q250 405 395 355 L284 592 Q250 606 216 592Z",fill:"url(#papelB)"},$("atras"));
+
+/* hojas */
+function hoja(ang,s,fill){
+ const g=el("g",{transform:`translate(${B.x} ${B.y-22}) rotate(${ang}) scale(${s})`},$("hojas"));
+ el("path",{d:"M0 0 L0 -22",stroke:"#2f6b34","stroke-width":3,"stroke-linecap":"round"},g);
+ el("path",{d:"M0 -20 C-38 -26 -48 -78 0 -104 C48 -78 38 -26 0 -20Z",fill:`url(#${fill})`,stroke:"#1f4d26","stroke-width":1.2},g);
+ el("path",{d:"M0 -22 L0 -92 M0 -45 L-17 -62 M0 -45 L17 -62 M0 -65 L-13 -80 M0 -65 L13 -80",stroke:"#a8dc98","stroke-width":1.3,fill:"none",opacity:.8,"stroke-linecap":"round"},g);
+}
+for(let i=0;i<15;i++){const a=-88+i*(176/14)+(rnd()-.5)*10;hoja(a,1.2+rnd()*.9,i%2?"hoja":"hoja2")}
+
+/* posiciones de las flores (racimo en forma de cúpula) */
+const F=[];
+for(let n=0;n<4000&&F.length<26;n++){
+ const a=rnd()*Math.PI*2,r=Math.sqrt(rnd());
+ const x=250+Math.cos(a)*r*190,y=215+Math.sin(a)*r*150;
+ if(y>385)continue;
+ const s=.8+rnd()*.5;
+ if(F.every(f=>Math.hypot(f.x-x,f.y-y)>23*(f.s+s)))F.push({x,y,s,t:Math.floor(rnd()*4)});
+}
+F.sort((a,b)=>a.y-b.y);
+
+/* tallos */
+F.forEach(f=>{
+ const d=`M${B.x} ${B.y} Q${B.x+(f.x-B.x)*.35} ${B.y-(B.y-f.y)*.6} ${f.x} ${f.y+10}`;
+ el("path",{d,stroke:"#2d6130","stroke-width":3.6,fill:"none","stroke-linecap":"round"},$("tallos"));
+ el("path",{d,stroke:"#5fa254","stroke-width":1.3,fill:"none","stroke-linecap":"round",opacity:.7},$("tallos"));
+});
+
+/* capullos */
+for(let i=0;i<5;i++){
+ const x=120+rnd()*260,y=120+rnd()*150,a=(x-250)/6;
+ el("path",{d:`M${B.x} ${B.y} Q${B.x+(x-B.x)*.3} ${B.y-(B.y-y)*.6} ${x} ${y}`,stroke:"#2d6130","stroke-width":2.6,fill:"none"},$("tallos"));
+ const g=el("g",{transform:`translate(${x} ${y}) rotate(${a})`},$("tallos"));
+ el("path",{d:"M0 4 C-9 -2 -8 -18 0 -22 C8 -18 9 -2 0 4Z",fill:"url(#p1)",stroke:"#3a1675","stroke-width":.8},g);
+ el("path",{d:"M-6 5 C-8 -3 0 -4 0 3 C0 -4 8 -3 6 5Z",fill:"#3e8a3e"},g);
+}
+
+/* violeta */
+const P="M0 0 C-16 -6 -19 -30 0 -35 C19 -30 16 -6 0 0Z";
+function violeta(f){
+ const rot=(f.x-250)/190*32+(rnd()-.5)*30;
+ const g=el("g",{class:"flor",filter:"url(#sombra)",transform:`translate(${f.x} ${f.y}) rotate(${rot}) scale(${f.s})`},$("flores"));
+ const b=el("g",{},g);b.style.animationDelay=`${-rnd()*3.5}s`;
+ const fill=`url(#p${f.t})`;
+ const petalo=(ang,sx,sy)=>el("path",{d:P,fill,stroke:"#2f1066","stroke-width":.9,"stroke-opacity":.55,
+   transform:`rotate(${ang}) scale(${sx} ${sy})`},b);
+ petalo(-24,.95,.95);petalo(24,.95,.95);          // superiores
+ petalo(-80,.98,1);petalo(80,.98,1);              // laterales
+ petalo(180,1.12,1.1);                             // inferior
+ // venas
+ [[-80,5],[80,-5],[160,0],[180,0],[200,0]].forEach(([a])=>
+  el("path",{d:"M0 -3 L0 -22",stroke:"#25094f","stroke-width":.9,opacity:.5,"stroke-linecap":"round",transform:`rotate(${a})`},b));
+ [-12,12].forEach(a=>el("path",{d:"M0 -3 L0 -18",stroke:"#25094f","stroke-width":.7,opacity:.35,transform:`rotate(${a-80})`},b));
+ // garganta clara y centro
+ el("ellipse",{cx:0,cy:3,rx:6,ry:7.5,fill:"#fff6c8",opacity:.9},b);
+ el("circle",{r:3.6,fill:"#ffcb2e"},b);
+ el("circle",{cx:-1,cy:-1,r:1.2,fill:"#fff4b8"},b);
+ // brillo suave
+ el("ellipse",{cx:-8,cy:-24,rx:4,ry:9,fill:"#fff",opacity:.12,transform:"rotate(-28)"},b);
+ g.addEventListener("click",()=>{g.classList.remove("pop");void g.getBBox();g.classList.add("pop")});
+}
+F.forEach(violeta);
+
+/* papel delantero */
+const fr=$("frente");
+el("path",{d:"M128 402 Q250 456 372 402 L292 594 Q250 608 208 594Z",fill:"url(#papel)",stroke:"#c9a574","stroke-width":1},fr);
+el("path",{d:"M128 402 Q250 456 250 530 L208 594Z",fill:"#c9a574",opacity:.18},fr);
+el("path",{d:"M372 402 Q250 456 250 530 L292 594Z",fill:"#fff",opacity:.28},fr);
+el("path",{d:"M128 402 Q250 456 372 402",stroke:"#fff",opacity:.8,"stroke-width":2,fill:"none"},fr);
+["M150 418 L232 590","M350 418 L268 590"].forEach(d=>el("path",{d,stroke:"#b8925f","stroke-width":1,opacity:.35,fill:"none"},fr));
+
+/* lazo */
+el("path",{d:"M190 484 Q250 508 310 484 L305 506 Q250 530 195 506Z",fill:"url(#cinta)"},fr);
+el("path",{d:"M250 502 C196 450 160 506 214 516Z",fill:"url(#cinta)",stroke:"#4d2791","stroke-width":1},fr);
+el("path",{d:"M250 502 C304 450 340 506 286 516Z",fill:"url(#cinta)",stroke:"#4d2791","stroke-width":1},fr);
+el("path",{d:"M246 508 L218 574 L238 566 L250 584 L254 512Z",fill:"#7d4bd0",stroke:"#4d2791","stroke-width":1},fr);
+el("path",{d:"M254 508 L282 574 L262 566 L250 584 L246 512Z",fill:"#9a6be0",stroke:"#4d2791","stroke-width":1},fr);
+el("ellipse",{cx:250,cy:508,rx:13,ry:10,fill:"#8a58d8",stroke:"#4d2791","stroke-width":1},fr);
+
+/* pétalos que caen */
+for(let i=0;i<7;i++){
+ const g=el("g",{transform:`translate(${90+rnd()*320} ${40+rnd()*120}) scale(.5)`},$("petalos"));
+ const p=el("path",{d:P,fill:"url(#p"+(i%4)+")",class:"cae"},g);
+ p.style.setProperty("--dx",(rnd()*80-40)+"px");
+ p.style.animationDuration=(7+rnd()*6)+"s";p.style.animationDelay=(-rnd()*10)+"s";
+}
+</script>
+</body>
+</html>
